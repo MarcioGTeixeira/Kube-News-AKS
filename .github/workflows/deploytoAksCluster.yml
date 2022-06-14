@@ -2,7 +2,8 @@ name: CI-CD
 
 on: [ "push" ]
 jobs:
-   CI:
+  build:
+  CI:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
@@ -19,8 +20,8 @@ jobs:
         docker build "$GITHUB_WORKSPACE/src" -f  "src/dockerfile" -t acrmarcioteixeira.azurecr.io/myakscluster:${{ github.sha }} --label dockerfile-path=src/dockerfile
         docker push acrmarcioteixeira.azurecr.io/myakscluster:${{ github.sha }}
       tags: |
-         acrmarcioteixeira.azurecr.io/kube-news:latest
-         acrmarcioteixeira.azurecr.io/kube-news:${{github.run_number}}
+        acrmarcioteixeira.azurecr.io/kube-news:latest
+        acrmarcioteixeira.azurecr.io/kube-news:${{github.run_number}}
    
     CD:
       runs-on: ubuntu-latest
