@@ -13,7 +13,7 @@ env:
   CLUSTER_RESOURCE_GROUP: "myResourceGroup"
   NAMESPACE: "kube-news"
   SECRET: "acr-secret"
-  APP_NAME: "kubenews"
+  APP_NAME: "kube-news"
   
 jobs:
   build:
@@ -59,8 +59,7 @@ jobs:
     - uses: azure/k8s-deploy@v1
       with:
         manifests: |
-          ${{ github.workspace }}/manifests/deployment.yaml
-          ${{ github.workspace }}/manifests/service.yaml
+          ${{ github.workspace }}/k8s/deployment.yaml
         images: |
           ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
         imagepullsecrets: |
