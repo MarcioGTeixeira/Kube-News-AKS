@@ -21,8 +21,7 @@ jobs:
       tags: |
          acrmarcioteixeira.azurecr.io/kube-news:latest
          acrmarcioteixeira.azurecr.io/kube-news:${{github.run_number}}
-
-  CD:
+   CD:
     runs-on: ubuntu-latest
     needs: [CI]
     steps:
