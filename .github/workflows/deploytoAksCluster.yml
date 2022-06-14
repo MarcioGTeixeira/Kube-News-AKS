@@ -1,22 +1,32 @@
-on: [push]
+name: CI-CD
+
+on: 
+  branches: [ "main" ]
 jobs:
-  build-and-deploy:
+  CI:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    
-    - uses: azure/docker-login@v1
+    - name: autenticando o usuário
+      uses: azure/docker-login@v1
       with:
         login-server: acrmarcioteixeira.azurecr.io
         username: ${{ secrets.acr_acrmarcioteixeira_username }}
         password: ${{ secrets.acr_acrmarcioteixeira_password }}
     
-    - name: Build and push image to ACR
+    - name: construindo a imagem e enviando para o ACR
       id: build-image
       run: |
         docker build "$GITHUB_WORKSPACE/src" -f  "src/dockerfile" -t acrmarcioteixeira.azurecr.io/myakscluster:${{ github.sha }} --label dockerfile-path=src/dockerfile
         docker push acrmarcioteixeira.azurecr.io/myakscluster:${{ github.sha }}
-    
+      tags: |
+         acrmarcioteixeira.azurecr.io/kube-news:latest
+         acrmarcioteixeira.azurecr.io/kube-news:${{github.run_number}}
+
+  CD:
+    runs-on: ubuntu-latest
+    needs: [CI]
+    steps:
     - uses: azure/k8s-set-context@v1
       with:
          kubeconfig: ${{ secrets.aks_myakscluster_kubeConfig }}
@@ -24,15 +34,15 @@ jobs:
     
     - name: Create namespace
       run: |
-        namespacePresent=`kubectl get namespace | grep myakscluster8738 | wc -l`
+        namespacePresent=`kubectl get namespace | grep appKubnews | wc -l`
         if [ $namespacePresent -eq 0 ]
         then
-            echo `kubectl create namespace myakscluster8738`
+            echo `kubectl create namespace appKubnews`
         fi
 
     - uses: azure/k8s-create-secret@v1
       with:
-        namespace: myakscluster8738
+        namespace: appKubnews
         container-registry-url: acrmarcioteixeira.azurecr.io
         container-registry-username: ${{ secrets.acr_acrmarcioteixeira_username }}
         container-registry-password: ${{ secrets.acr_acrmarcioteixeira_password }}
@@ -40,12 +50,10 @@ jobs:
        
     - uses: azure/k8s-deploy@v1.2
       with:
-        namespace: myakscluster8738
+        namespace: appKubnews
         manifests: |
-          manifests/deployment.yml
-          manifests/service.yml
           k8s/deployment.yaml
         images: |
-          acrmarcioteixeira.azurecr.io/myakscluster:${{ github.sha }}
+          acrmarcioteixeira.azurecr.io/kube-news:${{ github.sha }}
         imagepullsecrets: |
-          myaksclusterdockerauth
+          kubnewsdockerauth
