@@ -1,3 +1,4 @@
+name: CI-CD
 on: [push]
 jobs:
   build-and-deploy:
@@ -42,8 +43,7 @@ jobs:
       with:
         namespace: app-kube-news
         manifests: |
-          manifests/deployment.yml
-          manifests/service.yml
+          k8s/deployment.yaml
         images: |
           acrmarcioteixeira.azurecr.io/myakscluster:${{ github.sha }}
         imagepullsecrets: |
