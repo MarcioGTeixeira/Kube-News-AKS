@@ -28,12 +28,13 @@ jobs:
         username: ${{ secrets.REGISTRY_USERNAME }} 
         password: ${{ secrets.REGISTRY_PASSWORD }}
     
-    # Container build and push to a Azure Container Registry (ACR)
-    - run: |
-        docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
-        docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
-      working-directory: src/dockerfile
-    
+    - name: Azure Container Registry Build
+      uses: Azure/acr-build@v1
+      with:
+        registry: ${{ env.REGISTRY_NAME }}
+        service_principal: 
+        service_principal_password: 
+        
     # Set the target Azure Kubernetes Service (AKS) cluster. 
     - uses: azure/aks-set-context@v1
       with:
