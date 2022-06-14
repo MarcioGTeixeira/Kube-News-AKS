@@ -1,10 +1,8 @@
 name: CI-CD
 
-on: 
-  push:
-  branches: [ "main" ]
+on: [ "main" ]
 jobs:
-  CI:
+   CI:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
