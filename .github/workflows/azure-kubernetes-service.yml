@@ -50,6 +50,6 @@ jobs:
       - name: implantando a aplicacao no cluster kubernetes AKS
         uses: Azure/k8s-deploy@v3.1
         with:   
-          images: marcioteixeira/kube-news:${{github.run_number}}
+          images: marcioteixeira/kube-news:latest
           manifests: |
             k8s/deployment.yaml
