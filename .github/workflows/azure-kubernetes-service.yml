@@ -32,10 +32,12 @@ jobs:
       uses: Azure/acr-build@v1
       with:
         registry: ${{ env.REGISTRY_NAME }}
-        service_principal: 
-        service_principal_password: 
-        
-    # Set the target Azure Kubernetes Service (AKS) cluster. 
+        service_principal: ${{ secrets.SERVICEPRINCIPAL_ID }}
+        service_principal_password: ${{ secrets.SERVICEPRINCIPAL_PASSWORD }}
+        repository: kube-news
+        tenant: ${{ secrets.TENANT_ID }}
+   
+   # Set the target Azure Kubernetes Service (AKS) cluster. 
     - uses: azure/aks-set-context@v1
       with:
         creds: '${{ secrets.AZURE_CREDENTIALS }}'
