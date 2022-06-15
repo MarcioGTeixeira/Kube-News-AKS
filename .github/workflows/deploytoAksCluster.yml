@@ -42,8 +42,7 @@ jobs:
       with:
         namespace: myakscluster-kubnews
         manifests: |
-          manifests/deployment.yml
-          manifests/service.yml
+          k8s/deployment.yaml
         images: |
           acrmarcioteixeira.azurecr.io/myakscluster:${{ github.sha }}
         imagepullsecrets: |
